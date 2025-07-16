@@ -84,8 +84,6 @@ export default function Home() {
 
   useEffect(() => {
     shuffleAreas();
-    const interval = setInterval(shuffleAreas, 4000);
-    return () => clearInterval(interval);
   }, [shuffleAreas]);
 
   const toggleHold = (id: string, e: React.MouseEvent) => {
