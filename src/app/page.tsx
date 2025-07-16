@@ -22,7 +22,7 @@ import {
   Pin,
   PinOff
 } from 'lucide-react';
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
@@ -60,7 +60,7 @@ const DISPLAY_COUNT = 6;
 
 export default function Home() {
   const router = useRouter();
-  const [displayedAreas, setDisplayedAreas] = useState([]);
+  const [displayedAreas, setDisplayedAreas] = useState<typeof allLegalAreas>([]);
   const [heldAreas, setHeldAreas] = useState<Set<string>>(new Set());
 
   const shuffleAreas = useCallback(() => {
@@ -118,9 +118,11 @@ export default function Home() {
             <div className="mt-12">
                 <div className="flex justify-between items-center mb-6">
                     <h3 className="font-headline text-2xl font-semibold text-primary">Browse by Legal Area</h3>
-                    <Button variant="link" onClick={() => router.push('/legal-areas')}>
-                        View All
-                        <ArrowRight className="ml-2 h-4 w-4" />
+                    <Button variant="link" asChild>
+                        <Link href="/legal-areas">
+                            View All
+                            <ArrowRight className="ml-2 h-4 w-4" />
+                        </Link>
                     </Button>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
