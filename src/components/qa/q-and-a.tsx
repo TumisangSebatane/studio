@@ -174,13 +174,13 @@ function CaseAssessmentTab() {
   );
 }
 
-export function AITools() {
+export function LegalTools() {
   return (
     <div className="mx-auto max-w-3xl space-y-8">
        <div className="text-center">
         <h2 className="font-headline text-3xl font-bold text-primary flex items-center justify-center">
             <Sparkles className="mr-3 h-6 w-6 text-accent" />
-            AI Legal Tools
+            Legal Tools
         </h2>
         <p className="mt-2 text-muted-foreground">
             Leverage AI for legal research and document analysis.

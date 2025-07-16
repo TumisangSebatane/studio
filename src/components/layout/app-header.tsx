@@ -28,7 +28,7 @@ export function AppHeader() {
           <Button asChild variant="ghost" size="sm">
             <Link href="/q-and-a">
               <Sparkles className="mr-2 h-4 w-4" />
-              AI Tools
+              Legal Tools
             </Link>
           </Button>
           <Button variant="ghost" size="sm">
