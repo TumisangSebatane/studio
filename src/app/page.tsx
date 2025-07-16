@@ -1,7 +1,9 @@
+'use client';
+
 import { AppHeader } from '@/components/layout/app-header';
 import { AppFooter } from '@/components/layout/app-footer';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { 
   ArrowRight,
@@ -16,16 +18,24 @@ import {
   PenSquare,
   Scale,
   Search,
-  Users
+  Users,
+  Pin,
+  PinOff
 } from 'lucide-react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
-const legalAreas = [
-  { name: 'Constitutional Law', icon: Landmark },
-  { name: 'Criminal Law', icon: Gavel },
-  { name: 'Contract Law', icon: FileText },
-  { name: 'Company Law', icon: Briefcase },
-  { name: 'Family Law', icon: Users },
-  { name: 'Property Law', icon: BookCopy },
+const allLegalAreas = [
+  { id: 'constitutional', name: 'Constitutional Law', icon: Landmark },
+  { id: 'criminal', name: 'Criminal Law', icon: Gavel },
+  { id: 'contract', name: 'Contract Law', icon: FileText },
+  { id: 'company', name: 'Company Law', icon: Briefcase },
+  { id: 'family', name: 'Family Law', icon: Users },
+  { id: 'property', name: 'Property Law', icon: BookCopy },
+  { id: 'tort', name: 'Tort Law', icon: Scale },
+  { id: 'labour', name: 'Labour Law', icon: Users },
+  { id: 'ip', name: 'Intellectual Property', icon: PenSquare },
 ];
 
 const featuredHighlights = [
@@ -46,14 +56,58 @@ const newsItems = [
     { title: "New Cases" },
 ];
 
+const DISPLAY_COUNT = 6;
+
 export default function Home() {
+  const router = useRouter();
+  const [displayedAreas, setDisplayedAreas] = useState([]);
+  const [heldAreas, setHeldAreas] = useState<Set<string>>(new Set());
+
+  const shuffleAreas = useCallback(() => {
+    const heldItems = allLegalAreas.filter(area => heldAreas.has(area.id));
+    const unheldItems = allLegalAreas.filter(area => !heldAreas.has(area.id));
+    
+    const shuffled = [...unheldItems].sort(() => 0.5 - Math.random());
+    
+    const needed = DISPLAY_COUNT - heldItems.length;
+    const newDisplay = [...heldItems, ...shuffled.slice(0, needed)];
+    
+    // Maintain a consistent order if possible
+    newDisplay.sort((a, b) => {
+        const aIndex = allLegalAreas.findIndex(item => item.id === a.id);
+        const bIndex = allLegalAreas.findIndex(item => item.id === b.id);
+        return aIndex - bIndex;
+    });
+
+    setDisplayedAreas(newDisplay);
+  }, [heldAreas]);
+
+  useEffect(() => {
+    shuffleAreas();
+    const interval = setInterval(shuffleAreas, 4000);
+    return () => clearInterval(interval);
+  }, [shuffleAreas]);
+
+  const toggleHold = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent card click
+    e.preventDefault();
+    setHeldAreas(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else if (newSet.size < DISPLAY_COUNT) {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  };
+
   return (
     <div className="flex min-h-screen w-full flex-col bg-background">
       <AppHeader />
       <main className="flex-1">
         <div className="container mx-auto px-4 py-8">
           
-          {/* Main Section */}
           <section className="text-center py-12">
             <h2 className="font-headline text-4xl font-bold text-primary mb-4">Smart Search</h2>
             <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">Type a law, case name, or legal concept to begin your research.</p>
@@ -64,22 +118,39 @@ export default function Home() {
             </div>
             
             <div className="mt-12">
-                <h3 className="font-headline text-2xl font-semibold text-primary mb-6">Browse by Legal Area</h3>
+                <div className="flex justify-between items-center mb-6">
+                    <h3 className="font-headline text-2xl font-semibold text-primary">Browse by Legal Area</h3>
+                    <Button variant="link" onClick={() => router.push('/legal-areas')}>
+                        View All
+                        <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                    {legalAreas.map((area) => (
-                        <Card key={area.name} className="group text-center p-4 hover:shadow-md hover:-translate-y-1 transition-transform cursor-pointer">
-                            <area.icon className="h-8 w-8 mx-auto text-primary mb-2 group-hover:text-accent" />
-                            <p className="font-semibold text-sm">{area.name}</p>
-                        </Card>
-                    ))}
+                    {displayedAreas.map((area) => {
+                        const isHeld = heldAreas.has(area.id);
+                        return (
+                            <Link key={area.id} href="/legal-areas" passHref>
+                                <Card className="group text-center p-4 h-full hover:shadow-md hover:-translate-y-1 transition-transform cursor-pointer relative">
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="absolute top-1 right-1 h-7 w-7 z-10"
+                                        onClick={(e) => toggleHold(area.id, e)}
+                                    >
+                                        {isHeld ? <Pin className="h-4 w-4 text-primary" /> : <PinOff className="h-4 w-4 text-muted-foreground group-hover:text-primary" />}
+                                    </Button>
+                                    <area.icon className="h-8 w-8 mx-auto text-primary mb-2 group-hover:text-accent" />
+                                    <p className="font-semibold text-sm">{area.name}</p>
+                                </Card>
+                            </Link>
+                        )
+                    })}
                 </div>
             </div>
           </section>
 
-          {/* Sections Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 my-12">
             
-            {/* Featured Highlights */}
             <section className="lg:col-span-2 space-y-6">
               <h3 className="font-headline text-2xl font-bold text-primary">Featured Highlights</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -97,7 +168,6 @@ export default function Home() {
               </div>
             </section>
 
-            {/* Legal News & Alerts */}
             <section>
               <h3 className="font-headline text-2xl font-bold text-primary mb-6">Legal News & Alerts</h3>
               <Card>
@@ -118,7 +188,6 @@ export default function Home() {
 
           </div>
 
-          {/* Personal Dashboard */}
           <section className="my-12">
             <h3 className="font-headline text-2xl font-bold text-primary mb-6">Personal Dashboard</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
