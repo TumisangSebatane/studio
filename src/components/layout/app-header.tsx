@@ -1,4 +1,4 @@
-import { Scale, Search, Bookmark, User, HelpCircle, Sparkles } from 'lucide-react';
+import { Scale, Search, Bookmark, User, HelpCircle, Sparkles, Settings } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -31,13 +31,17 @@ export function AppHeader() {
               Legal Tools
             </Link>
           </Button>
-          <Button variant="ghost" size="sm">
-            <Bookmark className="mr-2 h-4 w-4" />
-            My Saved Docs
+          <Button asChild variant="ghost" size="sm">
+            <Link href="/saved-documents">
+                <Bookmark className="mr-2 h-4 w-4" />
+                My Saved Docs
+            </Link>
           </Button>
-          <Button variant="ghost" size="sm">
-            <User className="mr-2 h-4 w-4" />
-            Profile
+          <Button asChild variant="ghost" size="sm">
+            <Link href="/profile">
+                <Settings className="mr-2 h-4 w-4" />
+                Profile
+            </Link>
           </Button>
         </nav>
       </div>
