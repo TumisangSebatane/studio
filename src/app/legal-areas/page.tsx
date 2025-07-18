@@ -1,5 +1,3 @@
-import { AppHeader } from '@/components/layout/app-header';
-import { AppFooter } from '@/components/layout/app-footer';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, BookCopy, Briefcase, FileText, Gavel, Landmark, PenSquare, Scale, Users } from 'lucide-react';
@@ -19,39 +17,35 @@ const allLegalAreas = [
 
 export default function LegalAreasPage() {
   return (
-    <div className="flex min-h-screen w-full flex-col bg-background">
-      <AppHeader />
-      <main className="flex-1">
-        <div className="container mx-auto px-4 py-8">
-          <div className="mb-6">
-            <Button asChild variant="ghost">
-              <Link href="/">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Home
-              </Link>
-            </Button>
-          </div>
-          <h2 className="font-headline text-3xl font-bold text-primary mb-6">
-            All Legal Areas
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {allLegalAreas.map((area) => (
-              <Card key={area.id} className="group hover:shadow-lg hover:-translate-y-1 transition-transform cursor-pointer">
-                <CardHeader className="flex flex-row items-center gap-4">
-                  <area.icon className="h-8 w-8 text-primary group-hover:text-accent" />
-                  <CardTitle className="font-headline text-lg">{area.name}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <Button variant="secondary" className="w-full">
-                    Explore
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+    <main className="flex-1">
+      <div className="container mx-auto px-4 py-8">
+        <div className="mb-6">
+          <Button asChild variant="ghost">
+            <Link href="/">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to Home
+            </Link>
+          </Button>
         </div>
-      </main>
-      <AppFooter />
-    </div>
+        <h2 className="font-headline text-3xl font-bold text-primary mb-6">
+          All Legal Areas
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {allLegalAreas.map((area) => (
+            <Card key={area.id} className="group hover:shadow-lg hover:-translate-y-1 transition-transform cursor-pointer">
+              <CardHeader className="flex flex-row items-center gap-4">
+                <area.icon className="h-8 w-8 text-primary group-hover:text-accent" />
+                <CardTitle className="font-headline text-lg">{area.name}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Button variant="secondary" className="w-full">
+                  Explore
+                </Button>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+    </main>
   );
 }

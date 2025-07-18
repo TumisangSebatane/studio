@@ -1,6 +1,8 @@
 import type {Metadata} from 'next';
 import { Toaster } from "@/components/ui/toaster";
 import './globals.css';
+import { AppHeader } from '@/components/layout/app-header';
+import { AppFooter } from '@/components/layout/app-footer';
 
 export const metadata: Metadata = {
   title: 'LexiBotswana PWA',
@@ -22,7 +24,11 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body antialiased">
-        {children}
+        <div className="flex min-h-screen w-full flex-col bg-background">
+          <AppHeader />
+          {children}
+          <AppFooter />
+        </div>
         <Toaster />
       </body>
     </html>
