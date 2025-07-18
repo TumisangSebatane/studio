@@ -45,9 +45,9 @@ const featuredHighlights = [
 ];
 
 const dashboardItems = [
-    { title: "My Saved Documents", icon: FileText, description: "Access your bookmarked materials." },
-    { title: "Recently Viewed Items", icon: FileClock, description: "Jump back into your recent research." },
-    { title: "AI Draft a Document", icon: PenSquare, description: "Quickly start drafting legal documents." },
+    { title: "My Saved Documents", href: "/saved-documents", icon: FileText, description: "Access your bookmarked materials." },
+    { title: "Recently Viewed Items", href: "/recently-viewed", icon: FileClock, description: "Jump back into your recent research." },
+    { title: "AI Draft a Document", href: "/draft-document", icon: PenSquare, description: "Quickly start drafting legal documents." },
 ];
 
 const newsItems = [
@@ -192,20 +192,22 @@ export default function Home() {
             <h3 className="font-headline text-2xl font-bold text-primary mb-6">Personal Dashboard</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {dashboardItems.map(item => (
-                 <Card key={item.title} className="hover:shadow-lg transition-shadow">
-                    <CardHeader className="flex flex-row items-start justify-between">
-                        <div>
-                            <CardTitle className="font-headline text-lg flex items-center gap-2">
-                                <item.icon className="w-5 h-5 text-accent" />
-                                {item.title}
-                            </CardTitle>
-                            <CardDescription className="mt-1">{item.description}</CardDescription>
-                        </div>
-                         <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0">
-                            <ArrowRight className="w-4 h-4" />
-                        </Button>
-                    </CardHeader>
-                  </Card>
+                 <Link key={item.title} href={item.href} className="block hover:shadow-lg transition-shadow rounded-lg">
+                    <Card className="h-full">
+                      <CardHeader className="flex flex-row items-start justify-between">
+                          <div>
+                              <CardTitle className="font-headline text-lg flex items-center gap-2">
+                                  <item.icon className="w-5 h-5 text-accent" />
+                                  {item.title}
+                              </CardTitle>
+                              <CardDescription className="mt-1">{item.description}</CardDescription>
+                          </div>
+                          <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0">
+                              <ArrowRight className="w-4 h-4" />
+                          </Button>
+                      </CardHeader>
+                    </Card>
+                 </Link>
               ))}
             </div>
           </section>
