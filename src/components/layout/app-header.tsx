@@ -1,4 +1,4 @@
-import { Scale, Search, Bookmark, User, HelpCircle, Sparkles, Settings, BookCopy } from 'lucide-react';
+import { Scale, Search, Sparkles, Settings, BookCopy } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -35,12 +35,6 @@ export function AppHeader() {
             <Link href="/q-and-a">
               <Sparkles className="mr-2 h-4 w-4" />
               Legal Tools
-            </Link>
-          </Button>
-          <Button asChild variant="ghost" size="sm">
-            <Link href="/saved-documents">
-                <Bookmark className="mr-2 h-4 w-4" />
-                My Saved Docs
             </Link>
           </Button>
           <Button asChild variant="ghost" size="sm">
