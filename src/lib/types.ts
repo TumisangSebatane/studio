@@ -9,9 +9,17 @@ export type Document = {
   // Fields specific to Case Law
   court?: string;
   judge?: string;
+  judges?: string[]; // Evolving from single judge to multiple
   caseNumber?: string;
   headnotes?: string;
   
+  // Fields specific to Statutes
+  actNumber?: string;
+  sectionNumber?: string;
+
+  // Fields specific to Commentary
+  author?: string;
+
   // Fields for cross-referencing
   relatedStatutes?: { id: string, title: string }[];
   relatedCases?: { id: string, title: string }[];
