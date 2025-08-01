@@ -6,10 +6,11 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Sparkles, Terminal, Bot, FileUp, MessageSquare } from 'lucide-react';
+import { Sparkles, Terminal, Bot, FileUp, MessageSquare, ArrowLeft } from 'lucide-react';
 import { Skeleton } from '../ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from '../ui/input';
+import Link from 'next/link';
 
 function QandATab() {
   const [question, setQuestion] = useState('');
@@ -177,6 +178,14 @@ function CaseAssessmentTab() {
 export function LegalTools() {
   return (
     <div className="mx-auto max-w-3xl space-y-8">
+        <div className="mb-6">
+          <Button asChild variant="ghost">
+            <Link href="/">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to Home
+            </Link>
+          </Button>
+        </div>
        <div className="text-center">
         <h2 className="font-headline text-3xl font-bold text-primary flex items-center justify-center">
             <Sparkles className="mr-3 h-6 w-6 text-accent" />

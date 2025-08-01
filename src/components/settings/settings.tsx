@@ -4,7 +4,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { useEffect, useState } from 'react';
-import { Moon, Sun } from 'lucide-react';
+import { ArrowLeft, Moon, Sun } from 'lucide-react';
+import { Button } from '../ui/button';
+import Link from 'next/link';
 
 export function Settings() {
   const [mounted, setMounted] = useState(false);
@@ -24,22 +26,8 @@ export function Settings() {
     document.documentElement.classList.toggle('dark', newTheme === 'dark');
   };
 
-  if (!mounted) {
-    return (
-      <Card className="mx-auto max-w-lg">
-        <CardHeader>
-          <div className="h-8 w-32 animate-pulse rounded-md bg-muted"></div>
-          <div className="mt-2 h-4 w-48 animate-pulse rounded-md bg-muted"></div>
-        </CardHeader>
-        <CardContent>
-          <div className="h-20 w-full animate-pulse rounded-lg bg-muted"></div>
-        </CardContent>
-      </Card>
-    )
-  }
-
-  return (
-    <Card className="mx-auto max-w-lg shadow-md">
+  const renderContent = () => (
+     <Card className="mx-auto max-w-lg shadow-md">
       <CardHeader>
         <CardTitle className="font-headline text-2xl text-primary">Settings</CardTitle>
         <CardDescription>Manage your preferences for the application.</CardDescription>
@@ -68,4 +56,30 @@ export function Settings() {
       </CardContent>
     </Card>
   );
+
+  const renderSkeleton = () => (
+    <Card className="mx-auto max-w-lg">
+      <CardHeader>
+        <div className="h-8 w-32 animate-pulse rounded-md bg-muted"></div>
+        <div className="mt-2 h-4 w-48 animate-pulse rounded-md bg-muted"></div>
+      </CardHeader>
+      <CardContent>
+        <div className="h-20 w-full animate-pulse rounded-md bg-muted"></div>
+      </CardContent>
+    </Card>
+  );
+
+  return (
+    <div className="space-y-6">
+        <div className="mb-6">
+            <Button asChild variant="ghost">
+                <Link href="/">
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back to Home
+                </Link>
+            </Button>
+        </div>
+        {mounted ? renderContent() : renderSkeleton()}
+    </div>
+  )
 }
