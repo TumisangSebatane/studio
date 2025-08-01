@@ -13,12 +13,13 @@ import { Label } from '../ui/label';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
 import { Badge } from '../ui/badge';
 import Link from 'next/link';
+import { cn } from '@/lib/utils';
 
 export function SearchComponent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [query, setQuery] = useState(searchParams.get('q') || '');
-  const [mode, setMode] = useState<'verbatim' | 'ai_assisted'>('verbatim');
+  const [mode, setMode] = useState<'verbatim' | 'codified'>('verbatim');
   const [results, setResults] = useState<LegalSearchResult>([]);
   const [isPending, startTransition] = useTransition();
 
@@ -44,7 +45,7 @@ export function SearchComponent() {
   };
   
   const handleModeToggle = (checked: boolean) => {
-    const newMode = checked ? 'ai_assisted' : 'verbatim';
+    const newMode = checked ? 'codified' : 'verbatim';
     setMode(newMode);
     if (query.trim()) {
       startTransition(() => {
@@ -75,9 +76,9 @@ export function SearchComponent() {
               />
             </div>
             <div className="flex items-center space-x-2">
-              <Switch id="ai-mode" checked={mode === 'ai_assisted'} onCheckedChange={handleModeToggle} />
+              <Switch id="ai-mode" checked={mode === 'codified'} onCheckedChange={handleModeToggle} />
               <Label htmlFor="ai-mode" className="flex items-center gap-1">
-                <Bot className="h-4 w-4" /> AI-Assisted
+                <Bot className="h-4 w-4" /> Codified
               </Label>
             </div>
             <Button type="submit" disabled={isPending} size="lg" className="w-full md:w-auto">

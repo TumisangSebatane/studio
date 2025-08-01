@@ -18,7 +18,7 @@ const LegalSearchInputSchema = z.object({
     year: z.number().optional(),
     judge: z.string().optional(),
   }).describe('Optional filters for the search.'),
-  mode: z.enum(['verbatim', 'ai_assisted']).default('verbatim').describe('The search mode.'),
+  mode: z.enum(['verbatim', 'codified']).default('verbatim').describe('The search mode.'),
 });
 export type LegalSearchInput = z.infer<typeof LegalSearchInputSchema>;
 
@@ -164,7 +164,7 @@ const legalSearchFlow = ai.defineFlow(
       return { results };
     }
 
-    if (input.mode === 'ai_assisted') {
+    if (input.mode === 'codified') {
       const aiTasks = rankedDocs.map(async (doc) => {
         const baseResult = {
             id: doc.id,
