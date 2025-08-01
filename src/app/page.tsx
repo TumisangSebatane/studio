@@ -58,9 +58,16 @@ const DISPLAY_COUNT = 6;
 
 export default function Home() {
   const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState('');
   const [displayedAreas, setDisplayedAreas] = useState<typeof allLegalAreas>([]);
   const [heldAreas, setHeldAreas] = useState<Set<string>>(new Set());
 
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!searchQuery.trim()) return;
+    router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
+  };
+  
   const shuffleAreas = useCallback(() => {
     const heldItems = allLegalAreas.filter(area => heldAreas.has(area.id));
     const unheldItems = allLegalAreas.filter(area => !heldAreas.has(area.id));
@@ -105,11 +112,16 @@ export default function Home() {
         <section className="text-center py-12">
           <h2 className="font-headline text-4xl font-bold text-primary mb-4">Smart Search</h2>
           <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">Type a law, case name, or legal concept to begin your research.</p>
-          <div className="relative max-w-2xl mx-auto">
+          <form onSubmit={handleSearch} className="relative max-w-2xl mx-auto">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-            <Input placeholder="e.g., 'Companies Act section 25' or 'negligence'" className="h-12 text-lg pl-12 pr-28 rounded-full shadow-lg" />
-            <Button size="lg" className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full">Search</Button>
-          </div>
+            <Input
+              placeholder="e.g., 'Companies Act section 25' or 'negligence'"
+              className="h-12 text-lg pl-12 pr-28 rounded-full shadow-lg"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <Button type="submit" size="lg" className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full">Search</Button>
+          </form>
           
           <div className="mt-12">
               <div className="flex justify-between items-center mb-6">

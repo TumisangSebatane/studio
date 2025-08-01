@@ -1,9 +1,22 @@
-import { Scale, Search, Sparkles, Settings, BookCopy } from 'lucide-react';
+'use client';
+
+import { Scale, Search, Sparkles, BookCopy, Settings } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 export function AppHeader() {
+  const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!searchQuery.trim()) return;
+    router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
+  };
+
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-card">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
@@ -16,13 +29,15 @@ export function AppHeader() {
           </Link>
         </div>
         <div className="flex flex-1 max-w-lg items-center gap-2">
-          <div className="relative w-full">
+          <form onSubmit={handleSearch} className="relative w-full">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search documents..."
               className="w-full pl-9"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
-          </div>
+          </form>
         </div>
         <nav className="hidden items-center gap-1 md:flex">
            <Button asChild variant="ghost" size="sm">
