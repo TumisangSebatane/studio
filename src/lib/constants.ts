@@ -15,19 +15,32 @@ export const MOCK_DOCUMENTS: Document[] = [
       <h3 class="font-headline text-lg mt-6 mb-2 text-primary">Part II - Information and Data Protection Commission</h3>
       <p class="mb-4">This section establishes the Information and Data Protection Commission, outlining its functions, powers, and governance structure. The Commission is an independent body responsible for enforcing the Act.</p>
     `,
+    relatedCases: [
+      { id: 'case-1', title: 'Attorney General v. Dow (1992) BLR 119' }
+    ]
   },
   {
     id: 'case-1',
     title: 'Attorney General v. Dow (1992) BLR 119',
     category: 'Case Law',
     date: '1992-06-21',
+    court: 'Court of Appeal',
+    judge: 'Amissah, J.P., Aguda, J.A., Bizos, J.A.',
+    caseNumber: 'Civ. App. No. 4/91',
     summary: 'A landmark Court of Appeal case that dealt with citizenship and gender discrimination under the Constitution of Botswana.',
+    headnotes: `
+      <p class="mb-2"><b>Constitutional Law</b> – Citizenship – Discrimination – Whether section 4 of the Citizenship Act which denies citizenship to children of female citizens married to non-citizens is discriminatory.</p>
+      <p><b>Statutory Interpretation</b> – Constitution – Purposive approach – Interpretation of fundamental rights provisions.</p>
+    `,
     content: `
       <p class="mb-4">This case is a cornerstone of Botswana constitutional law. Unity Dow, a citizen of Botswana, challenged the constitutionality of the Citizenship Act, which prevented her from passing her citizenship to her children because their father was a non-citizen.</p>
       <p class="mb-4">The Court of Appeal held that the relevant sections of the Citizenship Act were discriminatory on the basis of sex and therefore violated the Constitution. The decision had profound implications for gender equality in Botswana.</p>
       <h3 class="font-headline text-lg mt-6 mb-2 text-primary">Key Legal Principles</h3>
       <p class="mb-4">The court affirmed that the constitutional protection against discrimination extends to discrimination based on gender. It interpreted the Constitution in a purposive manner to promote fundamental rights and freedoms.</p>
     `,
+    relatedStatutes: [
+        { id: 'act-1', title: 'Data Protection Act, 2018' }
+    ]
   },
   {
     id: 'commentary-1',

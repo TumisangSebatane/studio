@@ -1,4 +1,4 @@
-import { Scale, Search, Bookmark, User, HelpCircle, Sparkles, Settings } from 'lucide-react';
+import { Scale, Search, Bookmark, User, HelpCircle, Sparkles, Settings, BookCopy } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -25,6 +25,12 @@ export function AppHeader() {
           </div>
         </div>
         <nav className="hidden items-center gap-1 md:flex">
+           <Button asChild variant="ghost" size="sm">
+            <Link href="/law-reports">
+              <BookCopy className="mr-2 h-4 w-4" />
+              Law Reports
+            </Link>
+          </Button>
           <Button asChild variant="ghost" size="sm">
             <Link href="/q-and-a">
               <Sparkles className="mr-2 h-4 w-4" />
