@@ -1,0 +1,113 @@
+/**
+ * @fileOverview
+ * This ruleset enforces a strict user-ownership model for user profiles, annotations, and bookmarks, ensuring that only authenticated users can access their own data. Legal documents are treated as publicly readable.
+ *
+ * Data Structure:
+ * - /users/{userId}/profile: Stores user profile information, accessible only to the user.
+ * - /legal_documents/{legalDocumentId}: Stores legal documents; publicly readable.
+ * - /users/{userId}/annotations/{annotationId}: Stores user annotations, accessible only to the user.
+ * - /users/{userId}/bookmarks/{bookmarkId}: Stores user bookmarks, accessible only to the user.
+ *
+ * Key Security Decisions:
+ * - User data is strictly segregated under /users/{userId} to enforce ownership.
+ * - Legal documents are assumed to be publicly readable. More complex access controls would require a 'members' field.
+ * - List operations are allowed for user-owned subcollections.
+ *
+ * Denormalization for Authorization:
+ * - The userID is encoded in the path of each annotation and bookmark, removing the need for data duplication.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * @description Secure access to user profiles. Only the authenticated user can read and write their own profile.
+     * @path /users/{userId}/profile
+     * @allow (get, update, delete) if request.auth.uid == userId
+     * @allow (create) if request.auth.uid == userId && request.resource.data.id == userId
+     * @deny (get) if request.auth == null
+     * @deny (update, delete) if request.auth == null || request.auth.uid != userId
+     * @deny (create) if request.auth == null || request.resource.data.id != userId
+     * @principle Enforces document ownership for writes and requires authentication.
+     */
+    match /users/{userId}/profile {
+      // Read rules
+      allow get: if isSignedIn() && isOwner(userId);
+      allow list: if false; // No listing of profiles
+
+      // Write rules
+      allow create: if isSignedIn() && isOwner(userId) && request.resource.data.id == userId;
+      allow update: if isSignedIn() && isExistingOwner(userId) && request.resource.data.id == resource.data.id;
+      allow delete: if isSignedIn() && isExistingOwner(userId);
+    }
+
+    /**
+     * @description Allows public read access to legal documents. Write access is not currently controlled.
+     * @path /legal_documents/{legalDocumentId}
+     * @allow (get, list) if true
+     * @allow (create, update, delete) if false // TODO: Implement more restrictive access control
+     * @deny (create, update, delete) if true;
+     * @principle Allows public reads and requires authentication for writes.
+     */
+    match /legal_documents/{legalDocumentId} {
+      // Read rules - Publicly readable
+      allow get, list: if true;
+
+      // Write rules - No write access.  If ownership is required, add an ownerId field to the entity and update the rules.
+      allow create, update, delete: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
+    }
+
+    /**
+     * @description Secure access to user annotations. Only the authenticated user can read and write their own annotations.
+     * @path /users/{userId}/annotations/{annotationId}
+     * @allow (get, update, delete) if request.auth.uid == userId
+     * @allow (create) if request.auth.uid == userId
+     * @deny (get) if request.auth == null
+     * @deny (update, delete) if request.auth == null || request.auth.uid != userId
+     * @deny (create) if request.auth == null
+     * @principle Enforces document ownership for writes and requires authentication.
+     */
+    match /users/{userId}/annotations/{annotationId} {
+      // Read rules
+      allow get, list: if isSignedIn() && isOwner(userId);
+
+      // Write rules
+      allow create: if isSignedIn() && isOwner(userId) && request.resource.data.userId == userId;
+      allow update: if isSignedIn() && isExistingOwner(userId) && request.resource.data.userId == resource.data.userId;
+      allow delete: if isSignedIn() && isExistingOwner(userId);
+    }
+
+    /**
+     * @description Secure access to user bookmarks. Only the authenticated user can read and write their own bookmarks.
+     * @path /users/{userId}/bookmarks/{bookmarkId}
+     * @allow (get, update, delete) if request.auth.uid == userId
+     * @allow (create) if request.auth.uid == userId
+     * @deny (get) if request.auth == null
+     * @deny (update, delete) if request.auth == null || request.auth.uid != userId
+     * @deny (create) if request.auth == null
+     * @principle Enforces document ownership for writes and requires authentication.
+     */
+    match /users/{userId}/bookmarks/{bookmarkId} {
+      // Read rules
+      allow get, list: if isSignedIn() && isOwner(userId);
+
+      // Write rules
+      allow create: if isSignedIn() && isOwner(userId) && request.resource.data.userId == userId;
+      allow update: if isSignedIn() && isExistingOwner(userId) && request.resource.data.userId == resource.data.userId;
+      allow delete: if isSignedIn() && isExistingOwner(userId);
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+
+    function isExistingOwner(userId) {
+        return isOwner(userId) && resource != null;
+    }
+  }
+}
