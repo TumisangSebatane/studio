@@ -4,12 +4,14 @@ export type Document = {
   category: 'Statute' | 'Case Law' | 'Commentary';
   date: string;
   summary: string;
-  content: string; // The main body of the document (HTML or Markdown)
+  content: string; 
+  jurisdiction?: string;
+  version?: string;
   
   // Fields specific to Case Law
   court?: string;
   judge?: string;
-  judges?: string[]; // Evolving from single judge to multiple
+  judges?: string[];
   caseNumber?: string;
   headnotes?: string;
   

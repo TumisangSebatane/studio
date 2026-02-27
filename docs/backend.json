@@ -6,158 +6,41 @@
       "type": "object",
       "description": "Represents a user's profile within the LexiBotswana application.",
       "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the user profile."
-        },
-        "email": {
-          "type": "string",
-          "description": "User's email address.",
-          "format": "email"
-        },
-        "displayName": {
-          "type": "string",
-          "description": "User's display name."
-        },
-        "preferences": {
-          "type": "string",
-          "description": "User's application preferences, stored as a JSON string."
-        }
+        "id": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string" },
+        "preferences": { "type": "string" }
       },
-      "required": [
-        "id",
-        "email",
-        "displayName"
-      ]
+      "required": ["id", "email", "displayName"]
     },
     "LegalDocument": {
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "LegalDocument",
       "type": "object",
-      "description": "Represents a legal document, such as a statute or case law.",
+      "description": "Represents a legal document (statute, case law, or commentary) with rich metadata.",
       "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the legal document."
-        },
-        "title": {
-          "type": "string",
-          "description": "Title of the legal document."
-        },
-        "documentType": {
-          "type": "string",
-          "description": "Type of legal document (e.g., Statute, Case Law)."
-        },
-        "jurisdiction": {
-          "type": "string",
-          "description": "Jurisdiction of the legal document (e.g., Botswana)."
-        },
-        "content": {
-          "type": "string",
-          "description": "Content of the legal document."
-        },
-        "version": {
-          "type": "string",
-          "description": "Version of the legal document."
-        }
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "category": { "type": "string", "enum": ["Statute", "Case Law", "Commentary"] },
+        "date": { "type": "string", "format": "date" },
+        "summary": { "type": "string" },
+        "content": { "type": "string", "description": "Full text of the document (HTML/Markdown)." },
+        "court": { "type": "string" },
+        "judge": { "type": "string" },
+        "judges": { "type": "array", "items": { "type": "string" } },
+        "caseNumber": { "type": "string" },
+        "headnotes": { "type": "string" },
+        "actNumber": { "type": "string" },
+        "sectionNumber": { "type": "string" },
+        "author": { "type": "string" },
+        "version": { "type": "string" },
+        "jurisdiction": { "type": "string", "default": "Botswana" }
       },
-      "required": [
-        "id",
-        "title",
-        "documentType",
-        "jurisdiction",
-        "content",
-        "version"
-      ]
-    },
-    "Annotation": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "Annotation",
-      "type": "object",
-      "description": "Represents a user's annotation on a legal document.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the annotation."
-        },
-        "documentId": {
-          "type": "string",
-          "description": "Reference to LegalDocument. (Relationship: LegalDocument 1:N Annotation)"
-        },
-        "userId": {
-          "type": "string",
-          "description": "Reference to UserProfile. (Relationship: UserProfile 1:N Annotation)"
-        },
-        "position": {
-          "type": "number",
-          "description": "The position of the annotation in the document."
-        },
-        "content": {
-          "type": "string",
-          "description": "Content of the annotation."
-        },
-        "dateCreated": {
-          "type": "string",
-          "description": "Timestamp of when the annotation was created.",
-          "format": "date-time"
-        }
-      },
-      "required": [
-        "id",
-        "documentId",
-        "userId",
-        "position",
-        "content",
-        "dateCreated"
-      ]
-    },
-    "Bookmark": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "Bookmark",
-      "type": "object",
-      "description": "Represents a user's bookmark for a specific legal document.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the bookmark."
-        },
-        "documentId": {
-          "type": "string",
-          "description": "Reference to LegalDocument. (Relationship: LegalDocument 1:N Bookmark)"
-        },
-        "userId": {
-          "type": "string",
-          "description": "Reference to UserProfile. (Relationship: UserProfile 1:N Bookmark)"
-        },
-        "name": {
-          "type": "string",
-          "description": "Name of the bookmark."
-        },
-        "position": {
-          "type": "number",
-          "description": "The position of the bookmark in the document."
-        },
-        "dateCreated": {
-          "type": "string",
-          "description": "Timestamp of when the bookmark was created.",
-          "format": "date-time"
-        }
-      },
-      "required": [
-        "id",
-        "documentId",
-        "userId",
-        "name",
-        "position",
-        "dateCreated"
-      ]
+      "required": ["id", "title", "category", "content"]
     }
   },
   "auth": {
-    "providers": [
-      "password",
-      "anonymous"
-    ]
+    "providers": ["password", "anonymous"]
   },
   "firestore": {
     "structure": [
@@ -165,75 +48,18 @@
         "path": "/users/{userId}/profile",
         "definition": {
           "entityName": "UserProfile",
-          "schema": {
-            "$ref": "#/backend/entities/UserProfile"
-          },
-          "description": "Stores user profile data. Only the authenticated user can access their own profile.",
-          "params": [
-            {
-              "name": "userId",
-              "description": "The unique identifier of the user."
-            }
-          ]
+          "schema": { "$ref": "#/backend/entities/UserProfile" },
+          "description": "User profile data."
         }
       },
       {
         "path": "/legal_documents/{legalDocumentId}",
         "definition": {
           "entityName": "LegalDocument",
-          "schema": {
-            "$ref": "#/backend/entities/LegalDocument"
-          },
-          "description": "Stores legal documents. Assumes documents are publicly readable. If access control is needed, a `members` map would be required for fine-grained control.",
-          "params": [
-            {
-              "name": "legalDocumentId",
-              "description": "The unique identifier of the legal document."
-            }
-          ]
-        }
-      },
-      {
-        "path": "/users/{userId}/annotations/{annotationId}",
-        "definition": {
-          "entityName": "Annotation",
-          "schema": {
-            "$ref": "#/backend/entities/Annotation"
-          },
-          "description": "Stores user annotations. Only the authenticated user can access their own annotations.",
-          "params": [
-            {
-              "name": "userId",
-              "description": "The unique identifier of the user."
-            },
-            {
-              "name": "annotationId",
-              "description": "The unique identifier of the annotation."
-            }
-          ]
-        }
-      },
-      {
-        "path": "/users/{userId}/bookmarks/{bookmarkId}",
-        "definition": {
-          "entityName": "Bookmark",
-          "schema": {
-            "$ref": "#/backend/entities/Bookmark"
-          },
-          "description": "Stores user bookmarks. Only the authenticated user can access their own bookmarks.",
-          "params": [
-            {
-              "name": "userId",
-              "description": "The unique identifier of the user."
-            },
-            {
-              "name": "bookmarkId",
-              "description": "The unique identifier of the bookmark."
-            }
-          ]
+          "schema": { "$ref": "#/backend/entities/LegalDocument" },
+          "description": "Central repository for BLRs, Statutes, and Commentaries."
         }
       }
-    ],
-    "reasoning": "The Firestore data structure is designed to prioritize authorization independence, clarity, and scalability. User profiles are stored in a private collection `/users/{userId}/profile` to ensure only the authenticated user can access their data. Legal documents are stored in a flat `/legal_documents` collection, assuming they are either publicly accessible or access is managed through a separate access control mechanism (e.g., a 'members' map, though not currently present in the schema). Annotations and Bookmarks are stored as subcollections under each user's profile (`/users/{userId}/annotations` and `/users/{userId}/bookmarks`) ensuring that only the user can access them. This structure enforces path-based ownership where possible and uses flat collections with denormalized data to avoid complex `get()` calls in security rules. This facilitates atomic operations and simplifies debugging.  Specifically, annotations and bookmarks are stored as subcollections of users.  Since they are children of the user document, they can only be created/read/updated/deleted by the user which eliminates the need to `get()` a parent document in the database. This structure assumes legal documents are readable by all users. If fine-grained access control is required, the `LegalDocument` entity would need a `members` map, with that `members` map denormalized onto the Annotations and Bookmarks. The assumption here is that all `LegalDocuments` are public, making it so that the only security rules required are to guarantee that User-owned data is indeed owned by the User. QAPs are supported through structural segregation: user-specific data resides under `/users/{userId}`, allowing secure list operations based on the authenticated user's ID."
+    ]
   }
 }
